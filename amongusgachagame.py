@@ -9,7 +9,7 @@ root.title("AMONGUS GACHAPON")
 root.geometry('1150x525')
 
 # menu buttons
-
+# SUS
 
 def end_game():
     # 1/14/22 avh - Uses game_data_ds module to update the user's credit in the database

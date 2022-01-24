@@ -8,8 +8,13 @@ root = Tk()
 root.title("AMONGUS GACHAPON")
 root.geometry('1150x525')
 
-# menu buttons
-# SUS
+# to-do
+'''
+add a registration frame
+registration button
+should add a new entry into the database
+'''
+
 
 def end_game():
     # 1/14/22 avh - Uses game_data_ds module to update the user's credit in the database
@@ -131,14 +136,16 @@ green_count = 0
 username = 0
 
 # 1/14/22 evh - added a login frame
+# 1/23/22 added a registration frame
 # overlapping frames
 login_frame = Frame(root)
 start_menu = Frame(root)
 game_frame = Frame(root)
 coin_frame = Frame(root)
 have_frame = Frame(root)
+register_frame = Frame(root)
 
-for frame in (login_frame, start_menu, game_frame, coin_frame, have_frame):
+for frame in (login_frame, start_menu, game_frame, coin_frame, have_frame, register_frame):
     frame.grid(row=0, column=0, sticky='news')
 
 login_frame.tkraise()
@@ -158,6 +165,13 @@ login_button.place(relx=0.57, rely=0.5, anchor=CENTER)
 
 exit_game = Button(login_frame, text="Exit", command=end_game)
 exit_game.place(relx=0.9, rely=0.85, anchor=CENTER)
+
+# 1/23/22 added a registration button that should lead to a new registration frame
+register_button = Button(login_frame, text='New User', command=lambda: register_frame.tkraise())
+register_button.place(relx=0.62, rely=0.5, anchor=CENTER)
+
+# 1/23/22 new register frame
+# will have an entry for first name and last name
 
 
 # START MENU GUI

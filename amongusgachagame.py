@@ -3,6 +3,7 @@ import random
 from PIL import Image, ImageTk
 # 1/14/22 avh - Import game_data_ds module
 import modules.data_service.game_data_ds as game_data_ds
+import modules.data_service.data_service_core as data_service_core
 
 root = Tk()
 root.title("AMONGUS GACHAPON")
@@ -10,10 +11,27 @@ root.geometry('1150x525')
 
 # to-do
 '''
-add a registration frame
-registration button
-should add a new entry into the database
+add a label that parses the first name and last name of the database user that says welcome to the user by name
 '''
+
+# 1/24/22 creates an entry into the database with an autoincrement user_id
+
+
+def create_entry():
+    conn = data_service_core.get_connection()
+    cur = conn.cursor()
+    values = first_name.get(), last_name.get()
+    cur.execute("INSERT INTO user (first_name, last_name) VALUES (?, ?)", values)
+    cur.execute("Select user_id From user Order BY user_id DESC LIMIT 1;")
+    new = cur.fetchone()
+    cur.execute("INSERT INTO user_game_data (user_id) VALUES (?)", new)
+    new_num = new[0]
+    register_entry_button.place_forget()
+    register_label.config(text=f'Welcome, Your User_ID is: {new_num}')
+    register_label.place(relx=0.45, rely=0.6)
+    cur.close()
+    conn.commit()
+    conn.close()
 
 
 def end_game():
@@ -40,6 +58,15 @@ def reset_state():
     display_list()
     pulled.config(image=photostart)
     money_button.config(image=photostartr)
+
+
+# 1/24/22 refreshes the register frame for new registers within the same timeframe of program
+def register_reset():
+    first_entry.delete(0, END)
+    last_entry.delete(0, END)
+    register_entry_button.place(relx=0.5, rely=0.6)
+    register_label.place_forget()
+    login_info.delete(0, END)
 
 
 # 1/14/22 evh - logout function that updates the database without closing the program
@@ -81,6 +108,8 @@ def bckground():
 # 1/14/22 avh - Uses game_data_ds module to get the user's credit from the database
 # credit = 100
 # 1/14/22 evh - login feature
+# 1/24/22 remove entry on login for cleaner ui
+# 1/24/22 fixed the hardcode so that login works properly now
 def login():
     global username
     global red_count
@@ -88,8 +117,13 @@ def login():
     global yellow_count
     global green_count
     global credit
-    answer = login_info.get().strip().lower()
-    if answer == "1" or answer == "2":
+    answer = int(login_info.get())
+    conn = data_service_core.get_connection()
+    cur = conn.cursor()
+    cur.execute("Select user_id From user Order BY user_id DESC LIMIT 1;")
+    new = cur.fetchone()
+    new_num = new[0]
+    if answer <= new_num:
         username = int(login_info.get())
         row = game_data_ds.get_row_by_user(username)
         credit = row['credit']
@@ -105,6 +139,8 @@ def login():
         yellow_sus_count.config(text=f' x{yellow_count}')
         green_sus_count.config(text=f' x{green_count}')
         start_menu.tkraise()
+        login_info.delete(0, END)
+
     else:
         login_warning.place(relx=0.51, rely=0.6, anchor=CENTER)
 
@@ -170,9 +206,26 @@ exit_game.place(relx=0.9, rely=0.85, anchor=CENTER)
 register_button = Button(login_frame, text='New User', command=lambda: register_frame.tkraise())
 register_button.place(relx=0.62, rely=0.5, anchor=CENTER)
 
+
+# 1/24/22 Entry Variables
+first_name = StringVar()
+last_name = StringVar()
+
+
 # 1/23/22 new register frame
 # will have an entry for first name and last name
-
+# 1/24/22 registration page created
+Label(register_frame, text='First Name: ').place(relx=0.40, rely=0.4)
+Label(register_frame, text='Last Name: ').place(relx=0.40, rely=0.5)
+first_entry= Entry(register_frame, textvariable=first_name)
+last_entry= Entry(register_frame, textvariable=last_name)
+first_entry.place(relx=0.48, rely=0.4)
+last_entry.place(relx=0.48, rely=0.5)
+register_entry_button = Button(register_frame, text='Submit', command=create_entry)
+register_entry_button.place(relx=0.5, rely=0.6)
+register_label = Label(register_frame, text=f'Welcome, Your User_ID is: ')
+home = Button(register_frame, text="Menu", command=lambda: [show_frame(login_frame), register_reset()])
+home.place(relx=0.9, rely=0.85, anchor=CENTER)
 
 # START MENU GUI
 start_label = Label(start_menu, text="AMONG US", font=("Helvetica", 50))

@@ -57,16 +57,3 @@ def update_inventory(user_id, inventory_r, inventory_c, inventory_y, inventory_g
     conn.commit()
 
 
-# 1/23/22 create entry
-
-
-def create_entry():
-    """
-    Create a new entry
-    :param
-    :return:
-    """
-    sql = ''' INSERT INTO user(user_id, first_name, last_name)
-              VALUES(?,?,?)'''
-    conn = data_service_core.get_connection()
-    cur = conn.cursor()

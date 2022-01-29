@@ -146,7 +146,7 @@ def login():
 
 
 # sprites and assets
-imagestart = Image.open("D:/Pictures/MS/maple.png")
+imagestart = Image.open("D:/!Pycharmprojects/pics/maple.png")
 imagered = Image.open("D:/!Pycharmprojects/pics/red-among-us-png.png")
 imagecyan = Image.open("D:/!Pycharmprojects/pics/cyan-among-us-character.png")
 imageyellow = Image.open("D:/!Pycharmprojects/pics/yellow-among-us.png")
